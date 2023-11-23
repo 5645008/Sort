@@ -23,9 +23,10 @@ void insertion_sort(int list[], int first, int last, int gap)
 			compare++;
 			move++;
 		}
-		
+		if (list[i] != list[j + gap]) {
+			move++;
+		}
 		list[j + gap] = key;
-		move++;
 	}
 }
 //셸정렬(출력용)
