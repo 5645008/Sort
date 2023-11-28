@@ -1,4 +1,2 @@
-# Sort(실습)
-![](./image1.jpg)
-![](./image2.jpg)
-![](./image3.jpg)
+# 합병정렬-(실습)
+![](./imagea.jpg)
