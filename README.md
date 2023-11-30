@@ -1,4 +1,2 @@
-# Sort(실습)
-![](./image1.jpg)
-![](./image2.jpg)
-![](./image3.jpg)
+# 퀵정렬 (실습)
+![](./images.jpg)
