@@ -112,7 +112,7 @@ int main(void)
 	for (int k = 0; k < n; k++)
 		printf("%d ", list[k]);
 	printf("\n\n");
-
+	printf("Quick Sort\n");
 	quick_sort(list, 0, n - 1);
 
 	//ÄüÁ¤·ÄÀÇ 20È¸ Æò±Õ ±¸ÇÏ±â
@@ -122,8 +122,9 @@ int main(void)
 		quick_sort1(list, 0, n - 1);
 	}
 	//20È¸ Æò±Õ Ãâ·Â
+	printf("\n");
 	printf("Average Move Count: %f\n", allmove / 20);
-	printf("Average Compare Count: %f\n", allcompare / 20);
+	printf("Average Comp Count: %f\n", allcompare / 20);
 
 
 	return 0;
