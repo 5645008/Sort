@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #define MAX_SIZE 20
-#define SWAP(x, y, t) ( (t)=(x), (x)=(y), (y)=(t) )
 
+int sorted[MAX_SIZE];
 int list[MAX_SIZE];
 int n;
 int move;
@@ -11,138 +11,93 @@ int compare;
 int allmove;
 int allcompare;
 
-//선택정렬(출력용)
-void selection_sort(int list[], int n)
+
+//합병정렬(출력용)
+void merge(int list[], int left, int mid, int right)
 {
-	printf("Selection Sort\n");
-	move = 0;
-	compare = 0;
-	int i, j, least, temp;
-	for (i = 0; i < n - 1; i++)
+	int i, j, k, l;
+	i = left; j = mid + 1; k = left;
+	// 분할 정렬된 list의 합병
+	while (i <= mid && j <= right) {
+		if (list[i] <= list[j]) sorted[k++] = list[i++];
+		else sorted[k++] = list[j++];
+		move++;
+		compare++;
+	}
+	if (i > mid) 	// 남아 있는 레코드의 일괄 복사
+		for (l = j; l <= right; l++) {
+			sorted[k++] = list[l];
+			move++;
+		}
+	else 	// 남아 있는 레코드의 일괄 복사
+		for (l = i; l <= mid; l++) {
+			sorted[k++] = list[l];
+			move++;
+		}
+	// 배열 sorted[]의 리스트를 배열 list[]로 복사
+	for (l = left; l <= right; l++)
+		list[l] = sorted[l];
+	for (int o = 0; o < n; o++)
+		printf("%d ", list[o]);
+	printf("\n");
+}
+
+void merge_sort(int list[], int left, int right)
+{
+	int mid;
+	if (left < right)
 	{
-		least = i;
-		for (j = i + 1; j < n; j++) {		// 최솟값 탐색
-			if (list[j] < list[least]) least = j;
-			compare++;
-		}
-		SWAP(list[i], list[least], temp);
-		move++;
-		for (int k = 0; k < n; k++)
-			printf("%d ", list[k]);
-		printf("\n");
+		mid = (left + right) / 2;              // 리스트의 균등분할
+		merge_sort(list, left, mid);     // 부분리스트 정렬
+		merge_sort(list, mid + 1, right);//부분리스트 정렬
+		merge(list, left, mid, right);    // 합병
 	}
-	printf("Move Count: %d\n", move);
-	printf("Compare Count: %d\n", compare);
 }
 
 
-//선택정렬(평균비교용)
-void selection_sort1(int list[], int n)
+//합병정렬(평균용)
+void merge1(int list[], int left, int mid, int right)
 {
 	move = 0;
 	compare = 0;
-	int i, j, least, temp;
-	for (i = 0; i < n - 1; i++) {
-		least = i;
-		for (j = i + 1; j < n; j++) {			// 최솟값 탐색
-			if (list[j] < list[least]) least = j;
-			compare++;
-		}
-		SWAP(list[i], list[least], temp);
+	int i, j, k, l;
+	i = left; j = mid + 1; k = left;
+	// 분할 정렬된 list의 합병
+	while (i <= mid && j <= right) {
+		if (list[i] <= list[j]) sorted[k++] = list[i++];
+		else sorted[k++] = list[j++];
 		move++;
+		compare++;
 	}
-	allmove = allmove + move;
-	allcompare = allcompare + compare;
-}
-
-//삽입정렬(출력용)
-void insertion_sort(int list[], int n)
-{
-	printf("Insert Sort\n");
-	move = 0;
-	compare = 0;
-	int i, j, key;
-	for (i = 1; i < n; i++) {
-		key = list[i];
-		for (j = i - 1; j >= 0 && list[j] > key; j--) {
-			list[j + 1] = list[j]; 		// 레코드의 오른쪽 이동
-			compare++;
+	if (i > mid) 	// 남아 있는 레코드의 일괄 복사
+		for (l = j; l <= right; l++) {
+			sorted[k++] = list[l];
 			move++;
 		}
-		list[j + 1] = key;
-		for (int k = 0; k < n; k++)
-			printf("%d ", list[k]);
-		printf("\n");
-	}
-	printf("Move Count: %d\n", move);
-	printf("Compare Count: %d\n", compare);
-}
-
-//삽입정렬(평균비교용)
-void insertion_sort1(int list[], int n)
-{
-	move = 0;
-	compare = 0;
-	int i, j, key;
-	for (i = 1; i < n; i++) {
-		key = list[i];
-		for (j = i - 1; j >= 0 && list[j] > key; j--) {
-			list[j + 1] = list[j]; 		// 레코드의 오른쪽 이동
-			compare++;
+	else 	// 남아 있는 레코드의 일괄 복사
+		for (l = i; l <= mid; l++) {
+			sorted[k++] = list[l];
 			move++;
 		}
-		list[j + 1] = key;
-	}
+	// 배열 sorted[]의 리스트를 배열 list[]로 복사
+	for (l = left; l <= right; l++)
+		list[l] = sorted[l];
+
 	allmove = allmove + move;
 	allcompare = allcompare + compare;
 }
 
-
-
-
-//버블정렬(출력용)
-void bubble_sort(int list[], int n)
+void merge_sort1(int list[], int left, int right)
 {
-	printf("Bubble Sort\n");
-	move = 0;
-	compare = 0;
-	int i, j, temp;
-	for (i = n - 1; i > 0; i--) {
-		for (j = 0; j < i; j++) { 	// 앞뒤의 레코드를 비교한 후 교체
-			compare++;
-			if (list[j] > list[j + 1]) {
-				SWAP(list[j], list[j + 1], temp);
-				move++;
-			}
-		}
-		for (int k = 0; k < n; k++)
-			printf("%d ", list[k]);
-		printf("\n");
+	int mid;
+	if (left < right)
+	{
+		mid = (left + right) / 2;              // 리스트의 균등분할
+		merge_sort1(list, left, mid);     // 부분리스트 정렬
+		merge_sort1(list, mid + 1, right);//부분리스트 정렬
+		merge1(list, left, mid, right);    // 합병
 	}
-	printf("Move Count: %d\n", move);
-	printf("Compare Count: %d\n", compare);
 }
-
-//버블정렬(평균비교용)
-void bubble_sort1(int list[], int n)
-{
-	move = 0;
-	compare = 0;
-	int i, j, temp;
-	for (i = n - 1; i > 0; i--) {
-		for (j = 0; j < i; j++) {	// 앞뒤의 레코드를 비교한 후 교체
-			compare++;
-			if (list[j] > list[j + 1]) {
-				SWAP(list[j], list[j + 1], temp);
-				move++;
-			}
-		}
-	}
-	allmove = allmove + move;
-	allcompare = allcompare + compare;
-}
-
-
 
 int main(void)
 {
@@ -150,9 +105,8 @@ int main(void)
 	n = MAX_SIZE;
 	allmove = 0;
 	allcompare = 0;
-	
 
-	//선택정렬
+	//합병정렬
 	srand(time(NULL));
 	for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
 		list[i] = rand() % 100; // 난수 발생 범위 0~99
@@ -161,60 +115,17 @@ int main(void)
 		printf("%d ", list[k]);
 	printf("\n\n");
 
+	merge_sort(list, 0, n - 1);
 
-	selection_sort(list, n); // 선택정렬 호출 
+	//합병정렬의 20회 평균 구하기
 	for (int s = 0; s < 20; s++) {
 		for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
 			list[i] = rand() % 100; // 난수 발생 범위 0~99
-		selection_sort1(list, n);
+		merge_sort1(list, 0, n - 1);
 	}
-	printf("move평균: %d\n", allmove / 20);
-	printf("compare평균: %d\n", allcompare / 20);
-
-
-
-	printf("\n\n");
-
-	
-	//삽입정렬
-	allmove = 0;
-	allcompare = 0;
-	for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
-		list[i] = rand() % 100; // 난수 발생 범위 0~99
-	printf("Original List\n");
-	for (int k = 0; k < n; k++)
-		printf("%d ", list[k]);
-	printf("\n\n");
-
-	insertion_sort(list, n);
-	for (int s = 0; s < 20; s++) {
-		for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
-			list[i] = rand() % 100; // 난수 발생 범위 0~99
-		insertion_sort1(list, n);
-	}
-	printf("move평균: %d\n", allmove / 20);
-	printf("compare평균: %d\n", allcompare / 20);
-	printf("\n\n");
-
-
-	//버블정렬
-	allmove = 0;
-	allcompare = 0;
-	for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
-		list[i] = rand() % 100; // 난수 발생 범위 0~99
-	printf("Original List\n");
-	for (int k = 0; k < n; k++)
-		printf("%d ", list[k]);
-	printf("\n\n");
-
-	bubble_sort(list, n);
-	for (int s = 0; s < 20; s++) {
-		for (i = 0; i < n; i++)      	// 난수 생성 및 출력 
-			list[i] = rand() % 100; // 난수 발생 범위 0~99
-		bubble_sort1(list, n);
-	}
-	printf("move평균: %d\n", allmove / 20);
-	printf("compare평균: %d\n", allcompare / 20);
+	//20회 평균 출력
+	printf("Average Move Count: %d\n", allmove / 20);
+	printf("Average Compare Count: %d\n", allcompare / 20);
 
 
 	return 0;
